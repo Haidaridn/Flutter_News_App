@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/providers/news_provider.dart';
 import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/services/mock_news_service.dart';
@@ -18,9 +19,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      // Provider dibuat di akar aplikasi agar status berita tersedia di Beranda.
-      create: (_) => NewsProvider(newsService: newsService)..loadArticles(),
+    return MultiProvider(
+      // Provider dibuat di akar agar berita dan bookmark tersedia di semua layar.
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => NewsProvider(newsService: newsService)..loadArticles(),
+        ),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
+      ],
       child: MaterialApp(
         title: 'News App',
         debugShowCheckedModeBanner: false,

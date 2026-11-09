@@ -63,6 +63,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(service.callCount, 2);
   });
+
+  testWidgets('Bookmark dari Beranda tampil dan dapat dihapus di Favorit', (
+    WidgetTester tester,
+  ) async {
+    final service = _FakeNewsService(
+      articles: const <Article>[
+        Article(
+          title: 'Berita untuk disimpan',
+          url: 'https://example.com/berita-disimpan',
+        ),
+      ],
+    );
+    await tester.pumpWidget(MyApp(newsService: service));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Simpan ke favorit'));
+    await tester.pump();
+    expect(find.byTooltip('Hapus dari favorit'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Favorit'));
+    await tester.pumpAndSettle();
+    expect(find.text('Favorit'), findsOneWidget);
+    expect(find.text('Berita untuk disimpan'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Hapus dari favorit'));
+    await tester.pumpAndSettle();
+    expect(find.text('Belum ada artikel favorit.'), findsOneWidget);
+  });
 }
 
 class _FakeNewsService implements NewsService {

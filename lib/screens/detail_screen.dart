@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/theme/app_theme.dart';
 import 'package:news_app/widgets/article_card.dart';
+import 'package:provider/provider.dart';
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({super.key, required this.article});
@@ -11,7 +13,25 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Berita')),
+      appBar: AppBar(
+        title: const Text('Detail Berita'),
+        actions: [
+          Consumer<BookmarkProvider>(
+            builder: (context, bookmarkProvider, child) {
+              final isBookmarked = bookmarkProvider.isBookmarked(article);
+              return IconButton(
+                onPressed: () => bookmarkProvider.toggleBookmark(article),
+                tooltip: isBookmarked
+                    ? 'Hapus dari favorit'
+                    : 'Simpan ke favorit',
+                icon: Icon(
+                  isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

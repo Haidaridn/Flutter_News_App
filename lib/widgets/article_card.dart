@@ -3,9 +3,17 @@ import 'package:news_app/models/article.dart';
 import 'package:news_app/theme/app_theme.dart';
 
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({super.key, required this.article, this.onTap});
+  const ArticleCard({
+    super.key,
+    required this.article,
+    required this.isBookmarked,
+    required this.onBookmarkToggle,
+    this.onTap,
+  });
 
   final Article article;
+  final bool isBookmarked;
+  final VoidCallback onBookmarkToggle;
   final VoidCallback? onTap;
 
   @override
@@ -24,11 +32,27 @@ class ArticleCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    article.title,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleLarge,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          article.title,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: onBookmarkToggle,
+                        tooltip: isBookmarked
+                            ? 'Hapus dari favorit'
+                            : 'Simpan ke favorit',
+                        icon: Icon(
+                          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.small),
                   Text(

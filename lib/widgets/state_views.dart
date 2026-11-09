@@ -38,7 +38,12 @@ class ErrorView extends StatelessWidget {
 }
 
 class EmptyView extends StatelessWidget {
-  const EmptyView({super.key});
+  const EmptyView({
+    super.key,
+    this.message = 'Belum ada berita untuk ditampilkan.',
+  });
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +53,7 @@ class EmptyView extends StatelessWidget {
         size: AppSizes.stateIcon,
         color: Theme.of(context).colorScheme.primary,
       ),
-      message: 'Belum ada berita untuk ditampilkan.',
+      message: message,
     );
   }
 }

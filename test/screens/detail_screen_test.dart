@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/screens/detail_screen.dart';
 import 'package:news_app/theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('Detail menampilkan seluruh informasi artikel', (
@@ -26,6 +28,11 @@ void main() {
     expect(find.text('09/11/2026'), findsOneWidget);
     expect(find.text('Deskripsi lengkap berita.'), findsOneWidget);
     expect(find.byIcon(Icons.image_not_supported_outlined), findsOneWidget);
+
+    expect(find.byTooltip('Simpan ke favorit'), findsOneWidget);
+    await tester.tap(find.byTooltip('Simpan ke favorit'));
+    await tester.pump();
+    expect(find.byTooltip('Hapus dari favorit'), findsOneWidget);
 
     await tester.tap(find.text('Baca selengkapnya'));
     await tester.pump();
@@ -55,8 +62,11 @@ void main() {
 }
 
 Widget _buildDetailApp(Article article) {
-  return MaterialApp(
-    theme: AppTheme.lightTheme,
-    home: DetailScreen(article: article),
+  return ChangeNotifierProvider(
+    create: (_) => BookmarkProvider(),
+    child: MaterialApp(
+      theme: AppTheme.lightTheme,
+      home: DetailScreen(article: article),
+    ),
   );
 }
