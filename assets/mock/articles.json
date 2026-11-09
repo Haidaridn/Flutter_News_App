@@ -13,7 +13,8 @@
       "url": "https://example.com/berita/aplikasi-berita-pelajar",
       "urlToImage": "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
       "publishedAt": "2026-11-09T02:30:00Z",
-      "content": "Aplikasi dikembangkan secara bertahap agar setiap konsep dapat dipelajari dan diuji dengan jelas."
+      "content": "Aplikasi dikembangkan secara bertahap agar setiap konsep dapat dipelajari dan diuji dengan jelas.",
+      "category": "Teknologi"
     },
     {
       "source": {
@@ -26,7 +27,8 @@
       "url": "https://example.com/teknologi/belajar-digital",
       "urlToImage": null,
       "publishedAt": "2026-11-08T10:15:00Z",
-      "content": null
+      "content": null,
+      "category": "Bisnis"
     },
     {
       "source": {
@@ -39,7 +41,8 @@
       "url": null,
       "urlToImage": "",
       "publishedAt": null,
-      "content": "Kegiatan ini mendorong sportivitas dan kerja sama di antara para peserta."
+      "content": "Kegiatan ini mendorong sportivitas dan kerja sama di antara para peserta.",
+      "category": "Olahraga"
     }
   ]
 }

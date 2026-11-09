@@ -58,6 +58,41 @@ void main() {
         );
       },
     );
+
+    test('menyaring artikel berdasarkan pencarian dan kategori', () async {
+      const technologyArticle = Article(
+        title: 'Belajar Flutter',
+        sourceName: 'Tekno Hari Ini',
+        category: 'Teknologi',
+      );
+      const sportsArticle = Article(
+        title: 'Kompetisi Pelajar',
+        sourceName: 'Arena Sekolah',
+        category: 'Olahraga',
+      );
+      final provider = NewsProvider(
+        newsService: _FakeNewsService(
+          articles: const <Article>[technologyArticle, sportsArticle],
+        ),
+      );
+      addTearDown(provider.dispose);
+
+      await provider.loadArticles();
+      expect(provider.categories, <String>['Semua', 'Olahraga', 'Teknologi']);
+
+      provider.updateSearchQuery('flutter');
+      expect(provider.articles, const <Article>[technologyArticle]);
+      expect(provider.status, NewsStatus.success);
+
+      provider.updateSearchQuery('tidak ditemukan');
+      expect(provider.articles, isEmpty);
+      expect(provider.status, NewsStatus.empty);
+
+      provider.updateSearchQuery('');
+      provider.selectCategory('Olahraga');
+      expect(provider.articles, const <Article>[sportsArticle]);
+      expect(provider.selectedCategory, 'Olahraga');
+    });
   });
 }
 

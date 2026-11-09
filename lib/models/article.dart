@@ -8,6 +8,7 @@ class Article {
     this.urlToImage,
     this.publishedAt,
     this.content,
+    this.category,
   });
 
   final String title;
@@ -18,6 +19,7 @@ class Article {
   final String? urlToImage;
   final DateTime? publishedAt;
   final String? content;
+  final String? category;
 
   /// `fromJson` mengubah satu objek JSON NewsAPI menjadi model Article.
   factory Article.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class Article {
       urlToImage: _readNullableString(json['urlToImage']),
       publishedAt: _readNullableDate(json['publishedAt']),
       content: _readNullableString(json['content']),
+      category: _readNullableString(json['category']),
     );
   }
 

@@ -91,6 +91,40 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Belum ada artikel favorit.'), findsOneWidget);
   });
+
+  testWidgets('Pencarian dan kategori menyaring daftar berita', (
+    WidgetTester tester,
+  ) async {
+    final service = _FakeNewsService(
+      articles: const <Article>[
+        Article(title: 'Pasar Digital Tumbuh', category: 'Bisnis'),
+        Article(title: 'Tim Pelajar Menang', category: 'Olahraga'),
+      ],
+    );
+    await tester.pumpWidget(MyApp(newsService: service));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pasar Digital Tumbuh'), findsOneWidget);
+    expect(find.text('Tim Pelajar Menang'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('news-search-field')), 'pasar');
+    await tester.pump();
+    expect(find.text('Pasar Digital Tumbuh'), findsOneWidget);
+    expect(find.text('Tim Pelajar Menang'), findsNothing);
+
+    await tester.enterText(find.byKey(const Key('news-search-field')), 'xyz');
+    await tester.pump();
+    expect(
+      find.text('Tidak ada berita sesuai pencarian atau kategori.'),
+      findsOneWidget,
+    );
+
+    await tester.enterText(find.byKey(const Key('news-search-field')), '');
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Olahraga'));
+    await tester.pump();
+    expect(find.text('Pasar Digital Tumbuh'), findsNothing);
+    expect(find.text('Tim Pelajar Menang'), findsOneWidget);
+  });
 }
 
 class _FakeNewsService implements NewsService {

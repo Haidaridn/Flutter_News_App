@@ -26,6 +26,7 @@ void main() {
       );
       expect(articles.first.sourceName, 'Kabar Nusantara');
       expect(articles.first.author, 'Alya Putri');
+      expect(articles.first.category, 'Teknologi');
       expect(
         articles.first.publishedAt,
         DateTime.parse('2026-11-09T02:30:00Z'),
