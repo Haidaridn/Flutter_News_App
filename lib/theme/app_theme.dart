@@ -19,6 +19,12 @@ abstract final class AppSpacing {
   static const double extraLarge = 32;
 }
 
+/// Ukuran elemen visual yang dipakai berulang pada layar aplikasi.
+abstract final class AppSizes {
+  static const double articleImageHeight = 176;
+  static const double stateIcon = 48;
+}
+
 /// Aplikasi hanya memakai dua tingkat tipografi: judul dan isi.
 abstract final class AppTextStyles {
   static const double titleSize = 20;
