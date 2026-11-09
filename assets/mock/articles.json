@@ -1,0 +1,45 @@
+{
+  "status": "ok",
+  "totalResults": 3,
+  "articles": [
+    {
+      "source": {
+        "id": "kabar-nusantara",
+        "name": "Kabar Nusantara"
+      },
+      "author": "Alya Putri",
+      "title": "Pelajar Indonesia Kembangkan Aplikasi Berita Ramah Pengguna",
+      "description": "Proyek pembelajaran Flutter membantu pelajar memahami pengolahan data JSON dan antarmuka aplikasi.",
+      "url": "https://example.com/berita/aplikasi-berita-pelajar",
+      "urlToImage": "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+      "publishedAt": "2026-11-09T02:30:00Z",
+      "content": "Aplikasi dikembangkan secara bertahap agar setiap konsep dapat dipelajari dan diuji dengan jelas."
+    },
+    {
+      "source": {
+        "id": null,
+        "name": "Tekno Hari Ini"
+      },
+      "author": null,
+      "title": "Teknologi Digital Membantu Kegiatan Belajar di Sekolah",
+      "description": null,
+      "url": "https://example.com/teknologi/belajar-digital",
+      "urlToImage": null,
+      "publishedAt": "2026-11-08T10:15:00Z",
+      "content": null
+    },
+    {
+      "source": {
+        "id": "arena-olahraga",
+        "name": null
+      },
+      "author": "Raka Pratama",
+      "title": "Kompetisi Olahraga Pelajar Berlangsung Meriah",
+      "description": "Ratusan pelajar mengikuti kompetisi olahraga antarsekolah pada akhir pekan.",
+      "url": null,
+      "urlToImage": "",
+      "publishedAt": null,
+      "content": "Kegiatan ini mendorong sportivitas dan kerja sama di antara para peserta."
+    }
+  ]
+}
