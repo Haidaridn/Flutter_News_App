@@ -3,39 +3,43 @@ import 'package:news_app/models/article.dart';
 import 'package:news_app/theme/app_theme.dart';
 
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({super.key, required this.article});
+  const ArticleCard({super.key, required this.article, this.onTap});
 
   final Article article;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _ArticleImage(imageUrl: article.urlToImage),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.medium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  article.title,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: AppSpacing.small),
-                Text(
-                  _metadataText(article),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ArticleImage(imageUrl: article.urlToImage),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.medium),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article.title,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: AppSpacing.small),
+                  Text(
+                    _metadataText(article),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -54,37 +58,44 @@ class ArticleCard extends StatelessWidget {
   }
 }
 
-class _ArticleImage extends StatelessWidget {
-  const _ArticleImage({required this.imageUrl});
+class ArticleImage extends StatelessWidget {
+  const ArticleImage({
+    super.key,
+    required this.imageUrl,
+    this.height = AppSizes.articleImageHeight,
+  });
 
   final String? imageUrl;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     if (imageUrl == null) {
-      return const _ImagePlaceholder();
+      return _ImagePlaceholder(height: height);
     }
 
     return SizedBox(
-      height: AppSizes.articleImageHeight,
+      height: height,
       child: Image.network(
         imageUrl!,
         fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => const _ImagePlaceholder(),
+        errorBuilder: (_, _, _) => _ImagePlaceholder(height: height),
       ),
     );
   }
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder();
+  const _ImagePlaceholder({required this.height});
+
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox(
-      height: AppSizes.articleImageHeight,
+      height: height,
       child: ColoredBox(
         color: colorScheme.surfaceContainerHighest,
         child: Center(

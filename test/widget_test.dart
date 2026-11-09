@@ -10,7 +10,13 @@ void main() {
   ) async {
     final service = _FakeNewsService(
       articles: const <Article>[
-        Article(title: 'Berita pertama', sourceName: 'Sumber Uji'),
+        Article(
+          title: 'Berita pertama',
+          sourceName: 'Sumber Uji',
+          author: 'Penulis Uji',
+          description: 'Deskripsi berita uji.',
+          url: 'https://example.com/berita-pertama',
+        ),
       ],
     );
 
@@ -22,6 +28,13 @@ void main() {
     expect(find.text('Berita pertama'), findsOneWidget);
     expect(find.text('Sumber Uji'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
+
+    await tester.tap(find.text('Berita pertama'));
+    await tester.pumpAndSettle();
+    expect(find.text('Detail Berita'), findsOneWidget);
+    expect(find.text('Penulis Uji'), findsOneWidget);
+    expect(find.text('Deskripsi berita uji.'), findsOneWidget);
+    expect(find.text('Baca selengkapnya'), findsOneWidget);
   });
 
   testWidgets('Beranda menampilkan hasil kosong', (WidgetTester tester) async {

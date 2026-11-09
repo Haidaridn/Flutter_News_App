@@ -22,6 +22,7 @@ abstract final class AppSpacing {
 /// Ukuran elemen visual yang dipakai berulang pada layar aplikasi.
 abstract final class AppSizes {
   static const double articleImageHeight = 176;
+  static const double detailImageHeight = 240;
   static const double stateIcon = 48;
 }
 

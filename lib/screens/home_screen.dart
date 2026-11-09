@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/providers/news_provider.dart';
+import 'package:news_app/screens/detail_screen.dart';
 import 'package:news_app/theme/app_theme.dart';
 import 'package:news_app/widgets/article_card.dart';
 import 'package:news_app/widgets/state_views.dart';
@@ -31,7 +32,17 @@ class HomeScreen extends StatelessWidget {
                 separatorBuilder: (_, _) =>
                     const SizedBox(height: AppSpacing.medium),
                 itemBuilder: (context, index) {
-                  return ArticleCard(article: newsProvider.articles[index]);
+                  final article = newsProvider.articles[index];
+                  return ArticleCard(
+                    article: article,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => DetailScreen(article: article),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ),
