@@ -4,11 +4,19 @@ import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/theme/app_theme.dart';
 import 'package:news_app/widgets/article_card.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+typedef ArticleLauncher = Future<bool> Function(Uri uri);
 
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key, required this.article});
+  const DetailScreen({
+    super.key,
+    required this.article,
+    this.articleLauncher = _launchArticleExternally,
+  });
 
   final Article article;
+  final ArticleLauncher articleLauncher;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +68,7 @@ class DetailScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
-                      onPressed: article.url == null
-                          ? null
-                          : () => _showLinkNotice(context),
+                      onPressed: () => _openArticle(context),
                       icon: const Icon(Icons.open_in_new),
                       label: const Text('Baca selengkapnya'),
                     ),
@@ -76,13 +82,50 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  void _showLinkNotice(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Tautan artikel akan dibuka pada tahap integrasi API.'),
-      ),
-    );
+  Future<void> _openArticle(BuildContext context) async {
+    final uri = _readArticleUri(article.url);
+    if (uri == null) {
+      _showMessage(context, 'Tautan artikel tidak tersedia atau tidak valid.');
+      return;
+    }
+
+    try {
+      // async/await menunggu aplikasi eksternal membuka tautan artikel.
+      final opened = await articleLauncher(uri);
+      if (!context.mounted) {
+        return;
+      }
+      if (!opened) {
+        _showMessage(context, 'Tautan artikel gagal dibuka.');
+      }
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      _showMessage(context, 'Tautan artikel gagal dibuka.');
+    }
   }
+
+  Uri? _readArticleUri(String? url) {
+    final uri = url == null ? null : Uri.tryParse(url.trim());
+    if (uri == null ||
+        !uri.hasScheme ||
+        (uri.scheme != 'https' && uri.scheme != 'http') ||
+        uri.host.isEmpty) {
+      return null;
+    }
+    return uri;
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+Future<bool> _launchArticleExternally(Uri uri) {
+  return launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
 class _ArticleMetadata extends StatelessWidget {

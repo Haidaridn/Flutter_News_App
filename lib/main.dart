@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/providers/news_provider.dart';
 import 'package:news_app/screens/home_screen.dart';
-import 'package:news_app/services/mock_news_service.dart';
+import 'package:news_app/services/api_news_service.dart';
 import 'package:news_app/services/news_service.dart';
 import 'package:news_app/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  const NewsService newsService = MockNewsService();
-  runApp(const MyApp(newsService: newsService));
+  final NewsService newsService = ApiNewsService();
+  runApp(MyApp(newsService: newsService));
 }
 
 class MyApp extends StatelessWidget {

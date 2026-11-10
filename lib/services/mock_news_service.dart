@@ -18,7 +18,7 @@ class MockNewsService implements NewsService {
   final Duration delay;
 
   @override
-  Future<List<Article>> fetchArticles() async {
+  Future<List<Article>> fetchArticles({String? query, String? category}) async {
     // async/await meniru waktu tunggu saat mengambil data dari jaringan.
     await Future<void>.delayed(delay);
 
@@ -28,8 +28,35 @@ class MockNewsService implements NewsService {
       case MockNewsResult.empty:
         return const <Article>[];
       case MockNewsResult.success:
-        return _loadArticles();
+        final articles = await _loadArticles();
+        return _filterArticles(articles, query: query, category: category);
     }
+  }
+
+  List<Article> _filterArticles(
+    List<Article> articles, {
+    String? query,
+    String? category,
+  }) {
+    final normalizedQuery = query?.trim().toLowerCase() ?? '';
+    final normalizedCategory = category?.trim().toLowerCase() ?? '';
+
+    return articles
+        .where((article) {
+          final searchableText = <String>[
+            article.title,
+            article.sourceName ?? '',
+            article.description ?? '',
+          ].join(' ').toLowerCase();
+          final matchesQuery =
+              normalizedQuery.isEmpty ||
+              searchableText.contains(normalizedQuery);
+          final matchesCategory =
+              normalizedCategory.isEmpty ||
+              article.category?.toLowerCase() == normalizedCategory;
+          return matchesQuery && matchesCategory;
+        })
+        .toList(growable: false);
   }
 
   Future<List<Article>> _loadArticles() async {
