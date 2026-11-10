@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/main.dart';
 import 'package:news_app/models/article.dart';
 import 'package:news_app/services/news_service.dart';
+import 'package:news_app/theme/app_theme.dart';
 
 void main() {
   testWidgets('Beranda menampilkan loading lalu daftar berita', (
@@ -24,11 +25,13 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
     await tester.pumpAndSettle();
-    expect(find.text('Berita Terkini'), findsOneWidget);
+    expect(find.text('Berita Teknologi Terkini'), findsOneWidget);
     expect(find.text('Berita pertama'), findsOneWidget);
     expect(find.text('Sumber Uji'), findsOneWidget);
     expect(find.byType(RefreshIndicator), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Berita pertama'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Berita pertama'));
     await tester.pumpAndSettle();
     expect(find.text('Detail Berita'), findsOneWidget);
@@ -43,7 +46,10 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    expect(find.text('Belum ada berita untuk ditampilkan.'), findsOneWidget);
+    expect(
+      find.text('Belum ada berita teknologi untuk ditampilkan.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Beranda menampilkan error dan tombol coba lagi', (
@@ -59,6 +65,8 @@ void main() {
     );
     expect(find.text('Coba lagi'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Coba lagi'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Coba lagi'));
     await tester.pumpAndSettle();
     expect(service.callCount, 2);
@@ -92,43 +100,85 @@ void main() {
     expect(find.text('Belum ada artikel favorit.'), findsOneWidget);
   });
 
-  testWidgets('Pencarian dan kategori menyaring daftar berita', (
+  testWidgets('Pencarian dan topik menyaring daftar berita teknologi', (
     WidgetTester tester,
   ) async {
     final service = _FakeNewsService(
       articles: const <Article>[
-        Article(title: 'Pasar Digital Tumbuh', category: 'Bisnis'),
-        Article(title: 'Tim Pelajar Menang', category: 'Olahraga'),
+        Article(title: 'Model AI Terbaru', category: 'AI'),
+        Article(title: 'Robot Pelajar Menang', category: 'Robotika'),
       ],
     );
     await tester.pumpWidget(MyApp(newsService: service));
     await tester.pumpAndSettle();
 
-    expect(find.text('Pasar Digital Tumbuh'), findsOneWidget);
-    expect(find.text('Tim Pelajar Menang'), findsOneWidget);
+    expect(find.text('Model AI Terbaru'), findsOneWidget);
+    expect(find.text('Robot Pelajar Menang'), findsOneWidget);
 
-    await tester.enterText(find.byKey(const Key('news-search-field')), 'pasar');
+    await tester.enterText(find.byKey(const Key('news-search-field')), 'model');
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    expect(find.text('Pasar Digital Tumbuh'), findsOneWidget);
-    expect(find.text('Tim Pelajar Menang'), findsNothing);
+    expect(find.text('Model AI Terbaru'), findsOneWidget);
+    expect(find.text('Robot Pelajar Menang'), findsNothing);
 
     await tester.enterText(find.byKey(const Key('news-search-field')), 'xyz');
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
     expect(
-      find.text('Tidak ada berita sesuai pencarian atau kategori.'),
+      find.text('Tidak ada berita teknologi sesuai pencarian atau topik.'),
       findsOneWidget,
     );
 
     await tester.enterText(find.byKey(const Key('news-search-field')), '');
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Olahraga'));
+    final roboticsChip = find.widgetWithText(ChoiceChip, 'Robotika');
+    await tester.ensureVisible(roboticsChip);
     await tester.pumpAndSettle();
-    expect(find.text('Pasar Digital Tumbuh'), findsNothing);
-    expect(find.text('Tim Pelajar Menang'), findsOneWidget);
+    await tester.tap(roboticsChip);
+    await tester.pumpAndSettle();
+    expect(find.text('Model AI Terbaru'), findsNothing);
+    expect(find.text('Robot Pelajar Menang'), findsOneWidget);
   });
+
+  for (final size in <Size>[const Size(320, 568), const Size(1200, 800)]) {
+    testWidgets('Beranda dan Detail tanpa overflow pada $size', (
+      WidgetTester tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = size;
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        MyApp(
+          newsService: _FakeNewsService(
+            articles: const <Article>[
+              Article(title: 'Perkembangan AI untuk Pembelajaran'),
+              Article(
+                title: 'Keamanan Siber untuk Perangkat Sekolah',
+                category: 'Keamanan Siber',
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      final headline = find.text('Perkembangan AI untuk Pembelajaran');
+      if (size.width < AppSizes.narrowCardWidth) {
+        await tester.drag(find.byType(ListView).first, const Offset(0, -320));
+      } else {
+        await tester.ensureVisible(headline);
+      }
+      await tester.pumpAndSettle();
+      await tester.tap(headline);
+      await tester.pumpAndSettle();
+      expect(find.text('Detail Berita'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
 
 class _FakeNewsService implements NewsService {

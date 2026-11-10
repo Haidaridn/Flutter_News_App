@@ -29,13 +29,15 @@ void main() {
     expect(find.text('Penulis Berita'), findsOneWidget);
     expect(find.text('09/11/2026'), findsOneWidget);
     expect(find.text('Deskripsi lengkap berita.'), findsOneWidget);
-    expect(find.byIcon(Icons.image_not_supported_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.article_outlined), findsOneWidget);
 
     expect(find.byTooltip('Simpan ke favorit'), findsOneWidget);
     await tester.tap(find.byTooltip('Simpan ke favorit'));
     await tester.pump();
     expect(find.byTooltip('Hapus dari favorit'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Baca selengkapnya'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Baca selengkapnya'));
     await tester.pumpAndSettle();
     expect(find.text('Tautan artikel gagal dibuka.'), findsOneWidget);
@@ -58,6 +60,8 @@ void main() {
     );
     expect(readMoreButton.onPressed, isNotNull);
 
+    await tester.ensureVisible(find.text('Baca selengkapnya'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Baca selengkapnya'));
     await tester.pump();
     expect(
@@ -84,6 +88,8 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Baca selengkapnya'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Baca selengkapnya'));
     await tester.pumpAndSettle();
 

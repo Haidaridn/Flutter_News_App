@@ -15,7 +15,7 @@ void main() {
       expect(articles, hasLength(3));
       expect(
         articles.first.title,
-        'Pelajar Indonesia Kembangkan Aplikasi Berita Ramah Pengguna',
+        'Pelajar Indonesia Kembangkan Model AI untuk Membantu Belajar',
       );
     });
 
@@ -47,16 +47,16 @@ void main() {
       expect(service.delay, const Duration(seconds: 1));
     });
 
-    test('menyaring artikel berdasarkan query dan kategori', () async {
+    test('menyaring artikel berdasarkan query dan topik teknologi', () async {
       const service = MockNewsService(delay: Duration.zero);
 
       final articles = await service.fetchArticles(
-        query: 'kompetisi',
-        category: 'Olahraga',
+        query: 'robot',
+        category: 'Robotika',
       );
 
       expect(articles, hasLength(1));
-      expect(articles.single.category, 'Olahraga');
+      expect(articles.single.category, 'Robotika');
     });
   });
 }

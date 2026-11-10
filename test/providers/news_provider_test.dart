@@ -71,20 +71,20 @@ void main() {
       );
     });
 
-    test('menyaring artikel berdasarkan pencarian dan kategori', () async {
-      const technologyArticle = Article(
-        title: 'Belajar Flutter',
+    test('menyaring artikel berdasarkan pencarian dan topik', () async {
+      const aiArticle = Article(
+        title: 'AI untuk Belajar Flutter',
         sourceName: 'Tekno Hari Ini',
-        category: 'Teknologi',
+        category: 'AI',
       );
-      const sportsArticle = Article(
-        title: 'Kompetisi Pelajar',
-        sourceName: 'Arena Sekolah',
-        category: 'Olahraga',
+      const roboticsArticle = Article(
+        title: 'Robot Pelajar',
+        sourceName: 'Laboratorium Sekolah',
+        category: 'Robotika',
       );
       final provider = NewsProvider(
         newsService: _FakeNewsService(
-          articles: const <Article>[technologyArticle, sportsArticle],
+          articles: const <Article>[aiArticle, roboticsArticle],
         ),
         searchDebounceDuration: Duration.zero,
       );
@@ -95,7 +95,7 @@ void main() {
 
       provider.updateSearchQuery('flutter');
       await Future<void>.delayed(Duration.zero);
-      expect(provider.articles, const <Article>[technologyArticle]);
+      expect(provider.articles, const <Article>[aiArticle]);
       expect(provider.status, NewsStatus.success);
 
       provider.updateSearchQuery('tidak ditemukan');
@@ -105,10 +105,10 @@ void main() {
 
       provider.updateSearchQuery('');
       await Future<void>.delayed(Duration.zero);
-      provider.selectCategory('Olahraga');
+      provider.selectCategory('Robotika');
       await Future<void>.delayed(Duration.zero);
-      expect(provider.articles, const <Article>[sportsArticle]);
-      expect(provider.selectedCategory, 'Olahraga');
+      expect(provider.articles, const <Article>[roboticsArticle]);
+      expect(provider.selectedCategory, 'Robotika');
     });
   });
 }

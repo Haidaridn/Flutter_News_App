@@ -21,30 +21,69 @@ class BookmarkScreen extends StatelessWidget {
             return const EmptyView(message: 'Belum ada artikel favorit.');
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.medium),
-            itemCount: articles.length,
-            separatorBuilder: (_, _) =>
-                const SizedBox(height: AppSpacing.medium),
-            itemBuilder: (context, index) {
-              final article = articles[index];
-              return ArticleCard(
-                article: article,
-                isBookmarked: true,
-                onBookmarkToggle: () {
-                  bookmarkProvider.toggleBookmark(article);
-                },
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => DetailScreen(article: article),
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppSizes.pageMaxWidth,
+              ),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.page,
+                  AppSpacing.medium,
+                  AppSpacing.page,
+                  AppSpacing.extraLarge,
+                ),
+                children: [
+                  Text(
+                    'Artikel tersimpan',
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                  const SizedBox(height: AppSpacing.small),
+                  Text(
+                    'Baca kembali berita pilihanmu kapan saja selama aplikasi terbuka.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.large),
+                  for (final article in articles) ...[
+                    ArticleCard(
+                      article: article,
+                      isBookmarked: true,
+                      onBookmarkToggle: () {
+                        bookmarkProvider.toggleBookmark(article);
+                      },
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => DetailScreen(article: article),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              );
-            },
+                    const SizedBox(height: AppSpacing.medium),
+                  ],
+                ],
+              ),
+            ),
           );
         },
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 1,
+        onDestinationSelected: (index) {
+          if (index == 0) Navigator.of(context).pop();
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Beranda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bookmarks_outlined),
+            selectedIcon: Icon(Icons.bookmarks),
+            label: 'Tersimpan',
+          ),
+        ],
       ),
     );
   }

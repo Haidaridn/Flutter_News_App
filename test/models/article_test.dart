@@ -22,11 +22,11 @@ void main() {
       expect(articles, hasLength(3));
       expect(
         articles.first.title,
-        'Pelajar Indonesia Kembangkan Aplikasi Berita Ramah Pengguna',
+        'Pelajar Indonesia Kembangkan Model AI untuk Membantu Belajar',
       );
       expect(articles.first.sourceName, 'Kabar Nusantara');
       expect(articles.first.author, 'Alya Putri');
-      expect(articles.first.category, 'Teknologi');
+      expect(articles.first.category, 'AI');
       expect(
         articles.first.publishedAt,
         DateTime.parse('2026-11-09T02:30:00Z'),

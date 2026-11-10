@@ -21,23 +21,20 @@ class ApiNewsService implements NewsService {
     'NEWS_API_KEY',
   );
   static const String _host = 'newsapi.org';
-  static const String _path = '/v2/top-headlines';
+  static const String _path = '/v2/everything';
 
-  static const Map<String, String> _categoryCodes = <String, String>{
-    'bisnis': 'business',
-    'business': 'business',
-    'hiburan': 'entertainment',
-    'entertainment': 'entertainment',
-    'umum': 'general',
-    'general': 'general',
-    'kesehatan': 'health',
-    'health': 'health',
-    'sains': 'science',
-    'science': 'science',
-    'olahraga': 'sports',
-    'sports': 'sports',
-    'teknologi': 'technology',
-    'technology': 'technology',
+  static const String _allTechnologyQuery =
+      '(technology OR software OR cybersecurity OR robotics OR gadget OR startup OR "artificial intelligence")';
+  static const Map<String, String> _topicQueries = <String, String>{
+    'semua teknologi': _allTechnologyQuery,
+    'ai':
+        '("artificial intelligence" OR "machine learning" OR "generative AI" OR "large language model")',
+    'keamanan siber':
+        '(cybersecurity OR "cyber security" OR ransomware OR "data breach")',
+    'software': '(software OR programming OR developer OR "open source")',
+    'gadget': '(gadget OR smartphone OR laptop OR wearable)',
+    'startup': '(startup OR "venture capital" OR founder)',
+    'robotika': '(robotics OR robot OR automation OR drone)',
   };
 
   final http.Client _client;
@@ -53,15 +50,13 @@ class ApiNewsService implements NewsService {
       );
     }
 
-    final queryParameters = <String, String>{'country': 'us', 'pageSize': '20'};
-    final normalizedQuery = query?.trim();
-    if (normalizedQuery != null && normalizedQuery.isNotEmpty) {
-      queryParameters['q'] = normalizedQuery;
-    }
-    final categoryCode = _readCategoryCode(category);
-    if (categoryCode != null) {
-      queryParameters['category'] = categoryCode;
-    }
+    final queryParameters = <String, String>{
+      'q': _buildTechnologyQuery(query: query, topic: category),
+      'searchIn': 'title,description',
+      'language': 'en',
+      'sortBy': 'publishedAt',
+      'pageSize': '20',
+    };
 
     final uri = Uri.https(_host, _path, queryParameters);
 
@@ -116,12 +111,15 @@ class ApiNewsService implements NewsService {
     }
   }
 
-  String? _readCategoryCode(String? category) {
-    final normalizedCategory = category?.trim().toLowerCase();
-    if (normalizedCategory == null || normalizedCategory.isEmpty) {
-      return null;
+  String _buildTechnologyQuery({String? query, String? topic}) {
+    final normalizedTopic = topic?.trim().toLowerCase();
+    final topicQuery = _topicQueries[normalizedTopic] ?? _allTechnologyQuery;
+    final normalizedQuery = query?.trim().replaceAll('"', '');
+    if (normalizedQuery == null || normalizedQuery.isEmpty) {
+      return topicQuery;
     }
-    return _categoryCodes[normalizedCategory];
+
+    return '$topicQuery AND "$normalizedQuery"';
   }
 
   NewsException _createHttpException(int statusCode) {

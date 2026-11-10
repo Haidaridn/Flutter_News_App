@@ -14,15 +14,15 @@ class NewsProvider extends ChangeNotifier {
     this.searchDebounceDuration = const Duration(milliseconds: 500),
   });
 
-  static const String allCategories = 'Semua';
+  static const String allCategories = 'Semua Teknologi';
   static const List<String> availableCategories = <String>[
     allCategories,
-    'Bisnis',
-    'Hiburan',
-    'Kesehatan',
-    'Sains',
-    'Olahraga',
-    'Teknologi',
+    'AI',
+    'Keamanan Siber',
+    'Software',
+    'Gadget',
+    'Startup',
+    'Robotika',
   ];
 
   final NewsService newsService;

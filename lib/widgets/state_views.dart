@@ -72,23 +72,31 @@ class _StateViewLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.large),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            indicator,
-            const SizedBox(height: AppSpacing.medium),
-            Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.page),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppSizes.stateMaxWidth),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.extraLarge),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  indicator,
+                  const SizedBox(height: AppSpacing.large),
+                  Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  if (action != null) ...[
+                    const SizedBox(height: AppSpacing.large),
+                    action!,
+                  ],
+                ],
+              ),
             ),
-            if (action != null) ...[
-              const SizedBox(height: AppSpacing.medium),
-              action!,
-            ],
-          ],
+          ),
         ),
       ),
     );

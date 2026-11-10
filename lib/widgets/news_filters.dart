@@ -19,57 +19,95 @@ class NewsFilters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return ColoredBox(
-      color: colorScheme.surface,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.medium,
-          AppSpacing.small,
-          AppSpacing.medium,
-          AppSpacing.medium,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              key: const Key('news-search-field'),
-              enabled: enabled,
-              onChanged: onSearchChanged,
-              decoration: InputDecoration(
-                hintText: 'Cari judul atau sumber berita',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: colorScheme.surfaceContainerLowest,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.medium),
-                ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.page,
+        AppSpacing.small,
+        AppSpacing.page,
+        AppSpacing.medium,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'WAWASAN HARI INI',
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+          const SizedBox(height: AppSpacing.small),
+          Text(
+            'Berita Teknologi Terkini',
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          TextField(
+            key: const Key('news-search-field'),
+            enabled: enabled,
+            onChanged: onSearchChanged,
+            decoration: InputDecoration(
+              hintText: 'Cari berita teknologi',
+              prefixIcon: const Icon(Icons.search_outlined),
+              filled: true,
+              fillColor: AppColors.surface,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.medium,
+                horizontal: AppSpacing.medium,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.pillRadius),
+                borderSide: const BorderSide(color: AppColors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.pillRadius),
+                borderSide: const BorderSide(color: AppColors.border),
               ),
             ),
-            const SizedBox(height: AppSpacing.medium),
-            Text('Kategori', style: Theme.of(context).textTheme.bodyMedium),
-            const SizedBox(height: AppSpacing.small),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final category in categories)
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.small),
-                      child: ChoiceChip(
-                        label: Text(category),
-                        selected: category == selectedCategory,
-                        onSelected: enabled
-                            ? (_) => onCategorySelected(category)
-                            : null,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          Text('Topik pilihan', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: AppSpacing.small),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final category in categories)
+                  Padding(
+                    padding: const EdgeInsets.only(right: AppSpacing.small),
+                    child: ChoiceChip(
+                      label: Text(category),
+                      selected: category == selectedCategory,
+                      onSelected: enabled
+                          ? (_) => onCategorySelected(category)
+                          : null,
+                      selectedColor: AppColors.primary,
+                      backgroundColor: AppColors.surface,
+                      side: BorderSide(
+                        color: category == selectedCategory
+                            ? AppColors.primary
+                            : AppColors.border,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppSizes.pillRadius,
+                        ),
+                      ),
+                      labelStyle: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(
+                            color: category == selectedCategory
+                                ? AppColors.onImage
+                                : AppColors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                      showCheckmark: false,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.small,
+                        vertical: AppSpacing.small,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

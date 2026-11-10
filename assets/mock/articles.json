@@ -8,13 +8,13 @@
         "name": "Kabar Nusantara"
       },
       "author": "Alya Putri",
-      "title": "Pelajar Indonesia Kembangkan Aplikasi Berita Ramah Pengguna",
-      "description": "Proyek pembelajaran Flutter membantu pelajar memahami pengolahan data JSON dan antarmuka aplikasi.",
-      "url": "https://example.com/berita/aplikasi-berita-pelajar",
+      "title": "Pelajar Indonesia Kembangkan Model AI untuk Membantu Belajar",
+      "description": "Proyek kecerdasan buatan membantu pelajar memahami teknologi machine learning dan pemanfaatannya di sekolah.",
+      "url": "https://example.com/teknologi/ai-untuk-belajar",
       "urlToImage": "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
       "publishedAt": "2026-11-09T02:30:00Z",
-      "content": "Aplikasi dikembangkan secara bertahap agar setiap konsep dapat dipelajari dan diuji dengan jelas.",
-      "category": "Teknologi"
+      "content": "Model AI dikembangkan secara bertahap agar manfaat dan batasannya dapat dipelajari dengan jelas.",
+      "category": "AI"
     },
     {
       "source": {
@@ -22,27 +22,27 @@
         "name": "Tekno Hari Ini"
       },
       "author": null,
-      "title": "Teknologi Digital Membantu Kegiatan Belajar di Sekolah",
+      "title": "Pembaruan Keamanan Siber Lindungi Data Sekolah",
       "description": null,
-      "url": "https://example.com/teknologi/belajar-digital",
+      "url": "https://example.com/teknologi/keamanan-data-sekolah",
       "urlToImage": null,
       "publishedAt": "2026-11-08T10:15:00Z",
       "content": null,
-      "category": "Bisnis"
+      "category": "Keamanan Siber"
     },
     {
       "source": {
-        "id": "arena-olahraga",
+        "id": "laboratorium-robotika",
         "name": null
       },
       "author": "Raka Pratama",
-      "title": "Kompetisi Olahraga Pelajar Berlangsung Meriah",
-      "description": "Ratusan pelajar mengikuti kompetisi olahraga antarsekolah pada akhir pekan.",
+      "title": "Robot Karya Pelajar Membantu Otomasi Laboratorium",
+      "description": "Tim pelajar merancang robot sederhana untuk membantu tugas berulang di laboratorium sekolah.",
       "url": null,
       "urlToImage": "",
       "publishedAt": null,
-      "content": "Kegiatan ini mendorong sportivitas dan kerja sama di antara para peserta.",
-      "category": "Olahraga"
+      "content": "Proyek ini mengenalkan konsep sensor, pemrograman, dan otomasi kepada para peserta.",
+      "category": "Robotika"
     }
   ]
 }

@@ -35,11 +35,17 @@ void main() {
       final client = MockClient((request) async {
         expect(request.url.scheme, 'https');
         expect(request.url.host, 'newsapi.org');
-        expect(request.url.path, '/v2/top-headlines');
-        expect(request.url.queryParameters['country'], 'us');
+        expect(request.url.path, '/v2/everything');
         expect(request.url.queryParameters['pageSize'], '20');
-        expect(request.url.queryParameters['q'], 'flutter');
-        expect(request.url.queryParameters['category'], 'technology');
+        expect(request.url.queryParameters['searchIn'], 'title,description');
+        expect(request.url.queryParameters['language'], 'en');
+        expect(request.url.queryParameters['sortBy'], 'publishedAt');
+        expect(
+          request.url.queryParameters['q'],
+          '("artificial intelligence" OR "machine learning" OR "generative AI" OR "large language model") AND "flutter"',
+        );
+        expect(request.url.queryParameters, isNot(contains('country')));
+        expect(request.url.queryParameters, isNot(contains('category')));
         expect(request.headers['X-Api-Key'], testApiKey);
 
         return http.Response(
@@ -67,7 +73,7 @@ void main() {
       // async/await menunggu respons palsu tanpa mengakses internet.
       final articles = await service.fetchArticles(
         query: 'flutter',
-        category: 'Teknologi',
+        category: 'AI',
       );
 
       expect(articles, hasLength(1));
