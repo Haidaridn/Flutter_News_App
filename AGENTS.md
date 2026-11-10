@@ -1,22 +1,59 @@
-# Aturan proyek News App
+# Aturan Proyek News App
+
 ## Konteks
-Proyek belajar siswa: aplikasi berita Flutter (Dart). Acuan utama adalah 
-`docs/PRD.md`. PRD ini khusus front end, jadi data memakai file JSON contoh, 
-bukan API sungguhan.
-## Cara bekerja- Kerjakan hanya satu langkah dari "Urutan pengerjaan front end" di PRD per 
-permintaan. Setelah itu berhenti dan jelaskan perubahannya.- Jangan menambah fitur, layar, atau package di luar PRD. Package yang 
-diizinkan: `provider`. Package `http` baru dipakai pada tahap integrasi API.- Jika sebuah permintaan bertentangan dengan PRD, sampaikan dulu dan tanyakan 
-sebelum mengerjakan.
-## Struktur dan arsitektur- Ikuti struktur folder di PRD: models, services, providers, screens, 
-widgets, theme.- UI hanya bergantung pada kelas abstrak `NewsService`, tidak pernah langsung 
-pada `MockNewsService`.
-- State jaringan memakai Provider dengan empat status: loading, sukses, 
-error, kosong.- Bookmark disimpan di memori lewat `BookmarkProvider`, tanpa penyimpanan 
-permanen.
-## Gaya kode- Beri komentar singkat berbahasa Indonesia pada kode `Future`, 
-`async/await`, `fromJson`, dan Provider supaya siswa bisa belajar dari 
-kodenya.- Gunakan nama variabel dan file yang jelas. Satu widget memegang satu 
-tanggung jawab.- Semua warna, ukuran teks, dan jarak diambil dari 
-`lib/theme/app_theme.dart`, tidak ditulis langsung di widget.- Tangani nilai kosong (null) pada setiap field artikel.- Teks yang tampil ke pengguna memakai bahasa Indonesia.
-## Keamanan- Jangan menulis API key di kode atau di file yang ikut masuk Git.
-## Sebelum selesai- Jalankan `flutter analyze` dan pastikan tidak ada error.- Ringkas apa yang diubah dan apa yang perlu dites siswa
+
+Proyek ini adalah aplikasi berita berbasis Flutter dan Dart.
+
+Tahap front-end sudah selesai. Tahap sekarang adalah integrasi NewsAPI.org melalui `ApiNewsService`.
+
+UI yang sudah selesai harus dipertahankan. Integrasi API dilakukan terutama pada lapisan service dan Provider tanpa merombak desain aplikasi.
+
+Acuan utama proyek adalah `docs/PRD.md`.
+
+## Cara Bekerja
+
+- Baca `AGENTS.md` dan `docs/PRD.md` sebelum mengubah kode.
+- Kerjakan hanya bagian yang diminta pengguna dan jangan menambahkan fitur di luar PRD.
+- Jika pengguna secara eksplisit meminta integrasi NewsAPI secara lengkap, kerjakan seluruh tahap integrasi secara berurutan dari persiapan sampai pengujian.
+- Jangan berhenti setelah membuat rencana jika pekerjaan masih bisa dilanjutkan dengan aman.
+- Berhenti dan minta penjelasan hanya jika ada konflik dengan PRD, keputusan penting yang belum ditentukan, atau tindakan yang membutuhkan API key pengguna.
+- Jangan mengubah atau menghapus pekerjaan pengguna yang tidak berkaitan dengan tugas.
+- Package yang diizinkan adalah `provider`, `http`, dan `url_launcher`.
+- Jangan menambahkan package lain tanpa persetujuan pengguna.
+- Jangan melakukan commit atau push apabila masih ada error atau pengujian gagal.
+
+## Struktur dan Arsitektur
+
+- Ikuti struktur folder dalam PRD:
+  - `models`
+  - `services`
+  - `providers`
+  - `screens`
+  - `widgets`
+  - `theme`
+- UI hanya boleh bergantung pada kelas abstrak `NewsService`.
+- UI tidak boleh bergantung langsung pada `MockNewsService` maupun `ApiNewsService`.
+- `MockNewsService` digunakan sebagai sumber data contoh atau pengujian.
+- `ApiNewsService` digunakan untuk mengambil data sebenarnya dari NewsAPI.org.
+- Pemilihan implementasi service dilakukan pada composition root, misalnya di `main.dart`.
+- State jaringan dikelola melalui Provider dengan empat keadaan:
+  - `loading`
+  - `success`
+  - `error`
+  - `empty`
+- `NewsProvider` harus mengubah error dari service menjadi pesan berbahasa Indonesia yang ramah pengguna.
+- Bookmark disimpan di memori melalui `BookmarkProvider` tanpa penyimpanan permanen.
+- Jangan merombak UI hanya untuk mengganti sumber data.
+
+## Integrasi NewsAPI
+
+- `ApiNewsService` harus mengimplementasikan `NewsService`.
+- Gunakan endpoint HTTPS resmi NewsAPI.org.
+- Kirim API key melalui header `X-Api-Key`, bukan melalui query URL.
+- Baca API key menggunakan:
+
+  ```dart
+  String.fromEnvironment('NEWS_API_KEY')
+  ```
+
+- Sebutkan bagian yang masih perlu diuji secara manual oleh siswa.
