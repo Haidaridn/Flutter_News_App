@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Konfigurasi lokal berisi API key NewsAPI dan tidak boleh masuk Git.
+env.json

@@ -56,4 +56,15 @@ Acuan utama proyek adalah `docs/PRD.md`.
   String.fromEnvironment('NEWS_API_KEY')
   ```
 
+## Keamanan
+
+- API key hanya dibaca melalui `String.fromEnvironment('NEWS_API_KEY')`.
+- `env.json` harus dimasukkan ke `.gitignore` dan tidak boleh di-commit.
+- API key tidak boleh ditulis langsung di kode, dokumentasi, log, commit, atau chat.
+- `env.example.json` hanya boleh berisi placeholder, bukan API key asli.
+
+## Sebelum Selesai
+
+- Jalankan `flutter analyze` dan pastikan tidak ada error.
+- Jalankan pengujian yang tersedia dan jangan commit atau push jika pengujian gagal.
 - Sebutkan bagian yang masih perlu diuji secara manual oleh siswa.
