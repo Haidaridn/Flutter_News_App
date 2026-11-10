@@ -19,7 +19,9 @@ void main() {
       publishedAt: DateTime.utc(2026, 11, 9),
     );
 
-    await tester.pumpWidget(_buildDetailApp(article));
+    await tester.pumpWidget(
+      _buildDetailApp(article, articleLauncher: (_) async => false),
+    );
 
     expect(find.text('Detail Berita'), findsOneWidget);
     expect(find.text('Judul berita lengkap'), findsOneWidget);
@@ -35,11 +37,8 @@ void main() {
     expect(find.byTooltip('Hapus dari favorit'), findsOneWidget);
 
     await tester.tap(find.text('Baca selengkapnya'));
-    await tester.pump();
-    expect(
-      find.text('Tautan artikel akan dibuka pada tahap integrasi API.'),
-      findsOneWidget,
-    );
+    await tester.pumpAndSettle();
+    expect(find.text('Tautan artikel gagal dibuka.'), findsOneWidget);
   });
 
   testWidgets('Detail menangani field artikel yang kosong', (
@@ -57,16 +56,51 @@ void main() {
     final readMoreButton = tester.widget<FilledButton>(
       find.widgetWithText(FilledButton, 'Baca selengkapnya'),
     );
-    expect(readMoreButton.onPressed, isNull);
+    expect(readMoreButton.onPressed, isNotNull);
+
+    await tester.tap(find.text('Baca selengkapnya'));
+    await tester.pump();
+    expect(
+      find.text('Tautan artikel tidak tersedia atau tidak valid.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Baca selengkapnya meneruskan URL artikel yang valid', (
+    WidgetTester tester,
+  ) async {
+    Uri? openedUri;
+    const article = Article(
+      title: 'Berita dengan tautan',
+      url: 'https://example.com/berita-valid',
+    );
+    await tester.pumpWidget(
+      _buildDetailApp(
+        article,
+        articleLauncher: (uri) async {
+          openedUri = uri;
+          return true;
+        },
+      ),
+    );
+
+    await tester.tap(find.text('Baca selengkapnya'));
+    await tester.pumpAndSettle();
+
+    expect(openedUri, Uri.parse('https://example.com/berita-valid'));
+    expect(find.byType(SnackBar), findsNothing);
   });
 }
 
-Widget _buildDetailApp(Article article) {
+Widget _buildDetailApp(Article article, {ArticleLauncher? articleLauncher}) {
   return ChangeNotifierProvider(
     create: (_) => BookmarkProvider(),
     child: MaterialApp(
       theme: AppTheme.lightTheme,
-      home: DetailScreen(article: article),
+      home: DetailScreen(
+        article: article,
+        articleLauncher: articleLauncher ?? (_) async => true,
+      ),
     ),
   );
 }

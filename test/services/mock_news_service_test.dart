@@ -46,5 +46,17 @@ void main() {
 
       expect(service.delay, const Duration(seconds: 1));
     });
+
+    test('menyaring artikel berdasarkan query dan kategori', () async {
+      const service = MockNewsService(delay: Duration.zero);
+
+      final articles = await service.fetchArticles(
+        query: 'kompetisi',
+        category: 'Olahraga',
+      );
+
+      expect(articles, hasLength(1));
+      expect(articles.single.category, 'Olahraga');
+    });
   });
 }

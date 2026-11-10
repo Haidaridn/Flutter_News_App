@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/models/article.dart';
 import 'package:news_app/providers/news_provider.dart';
+import 'package:news_app/services/news_exception.dart';
 import 'package:news_app/services/news_service.dart';
 
 void main() {
@@ -40,24 +41,35 @@ void main() {
       expect(provider.articles, isEmpty);
     });
 
-    test(
-      'memakai status error dan pesan Indonesia saat service gagal',
-      () async {
-        final provider = NewsProvider(
-          newsService: _FakeNewsService(error: Exception('Gagal')),
-        );
-        addTearDown(provider.dispose);
+    test('meneruskan pesan NewsException ke state error', () async {
+      final provider = NewsProvider(
+        newsService: _FakeNewsService(
+          error: const NewsException('API key NewsAPI belum diisi.'),
+        ),
+      );
+      addTearDown(provider.dispose);
 
-        await provider.loadArticles();
+      await provider.loadArticles();
 
-        expect(provider.status, NewsStatus.error);
-        expect(provider.articles, isEmpty);
-        expect(
-          provider.errorMessage,
-          'Berita gagal dimuat. Silakan coba lagi.',
-        );
-      },
-    );
+      expect(provider.status, NewsStatus.error);
+      expect(provider.articles, isEmpty);
+      expect(provider.errorMessage, 'API key NewsAPI belum diisi.');
+    });
+
+    test('mengubah error umum menjadi pesan koneksi yang ramah', () async {
+      final provider = NewsProvider(
+        newsService: _FakeNewsService(error: Exception('Gagal')),
+      );
+      addTearDown(provider.dispose);
+
+      await provider.loadArticles();
+
+      expect(provider.status, NewsStatus.error);
+      expect(
+        provider.errorMessage,
+        'Berita gagal dimuat. Periksa koneksi lalu silakan coba lagi.',
+      );
+    });
 
     test('menyaring artikel berdasarkan pencarian dan kategori', () async {
       const technologyArticle = Article(
@@ -74,22 +86,27 @@ void main() {
         newsService: _FakeNewsService(
           articles: const <Article>[technologyArticle, sportsArticle],
         ),
+        searchDebounceDuration: Duration.zero,
       );
       addTearDown(provider.dispose);
 
       await provider.loadArticles();
-      expect(provider.categories, <String>['Semua', 'Olahraga', 'Teknologi']);
+      expect(provider.categories, NewsProvider.availableCategories);
 
       provider.updateSearchQuery('flutter');
+      await Future<void>.delayed(Duration.zero);
       expect(provider.articles, const <Article>[technologyArticle]);
       expect(provider.status, NewsStatus.success);
 
       provider.updateSearchQuery('tidak ditemukan');
+      await Future<void>.delayed(Duration.zero);
       expect(provider.articles, isEmpty);
       expect(provider.status, NewsStatus.empty);
 
       provider.updateSearchQuery('');
+      await Future<void>.delayed(Duration.zero);
       provider.selectCategory('Olahraga');
+      await Future<void>.delayed(Duration.zero);
       expect(provider.articles, const <Article>[sportsArticle]);
       expect(provider.selectedCategory, 'Olahraga');
     });
@@ -102,7 +119,8 @@ class _ControlledNewsService implements NewsService {
   final Completer<List<Article>> completer;
 
   @override
-  Future<List<Article>> fetchArticles() => completer.future;
+  Future<List<Article>> fetchArticles({String? query, String? category}) =>
+      completer.future;
 }
 
 class _FakeNewsService implements NewsService {
@@ -112,11 +130,23 @@ class _FakeNewsService implements NewsService {
   final Object? error;
 
   @override
-  Future<List<Article>> fetchArticles() async {
+  Future<List<Article>> fetchArticles({String? query, String? category}) async {
     if (error != null) {
       throw error!;
     }
 
-    return articles;
+    final normalizedQuery = query?.toLowerCase() ?? '';
+    final normalizedCategory = category?.toLowerCase() ?? '';
+    return articles
+        .where((article) {
+          final matchesQuery =
+              normalizedQuery.isEmpty ||
+              article.title.toLowerCase().contains(normalizedQuery);
+          final matchesCategory =
+              normalizedCategory.isEmpty ||
+              article.category?.toLowerCase() == normalizedCategory;
+          return matchesQuery && matchesCategory;
+        })
+        .toList(growable: false);
   }
 }

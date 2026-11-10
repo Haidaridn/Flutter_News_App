@@ -54,7 +54,7 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(
-      find.text('Berita gagal dimuat. Silakan coba lagi.'),
+      find.text('Berita gagal dimuat. Periksa koneksi lalu silakan coba lagi.'),
       findsOneWidget,
     );
     expect(find.text('Coba lagi'), findsOneWidget);
@@ -108,20 +108,24 @@ void main() {
     expect(find.text('Tim Pelajar Menang'), findsOneWidget);
 
     await tester.enterText(find.byKey(const Key('news-search-field')), 'pasar');
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
     expect(find.text('Pasar Digital Tumbuh'), findsOneWidget);
     expect(find.text('Tim Pelajar Menang'), findsNothing);
 
     await tester.enterText(find.byKey(const Key('news-search-field')), 'xyz');
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
     expect(
       find.text('Tidak ada berita sesuai pencarian atau kategori.'),
       findsOneWidget,
     );
 
     await tester.enterText(find.byKey(const Key('news-search-field')), '');
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ChoiceChip, 'Olahraga'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('Pasar Digital Tumbuh'), findsNothing);
     expect(find.text('Tim Pelajar Menang'), findsOneWidget);
   });
@@ -135,7 +139,7 @@ class _FakeNewsService implements NewsService {
   int callCount = 0;
 
   @override
-  Future<List<Article>> fetchArticles() async {
+  Future<List<Article>> fetchArticles({String? query, String? category}) async {
     callCount += 1;
     // Future memberi satu frame loading sebelum hasil uji dikembalikan.
     await Future<void>.delayed(Duration.zero);
@@ -144,6 +148,18 @@ class _FakeNewsService implements NewsService {
       throw error!;
     }
 
-    return articles;
+    final normalizedQuery = query?.toLowerCase() ?? '';
+    final normalizedCategory = category?.toLowerCase() ?? '';
+    return articles
+        .where((article) {
+          final matchesQuery =
+              normalizedQuery.isEmpty ||
+              article.title.toLowerCase().contains(normalizedQuery);
+          final matchesCategory =
+              normalizedCategory.isEmpty ||
+              article.category?.toLowerCase() == normalizedCategory;
+          return matchesQuery && matchesCategory;
+        })
+        .toList(growable: false);
   }
 }
